@@ -27,7 +27,7 @@ namespace CRUD.Repositories
 
         public async Task<T> GetById(int Id)
         {
-            return await context.Set<T>().FindAsync();
+            return await context.Set<T>().FindAsync(Id);
         }
 
         public async Task Insert(T obj)

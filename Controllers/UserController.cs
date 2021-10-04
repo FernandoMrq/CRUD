@@ -63,6 +63,8 @@ namespace CRUD.Controllers
                 return BadRequest("Id não deve ser definido para o insert/create.");
             }
 
+            user.Senha = GenericService.hashString(user.Senha);
+
             await repository.Insert(user);
 
             return CreatedAtAction(nameof(GetUser), new { Id = user.Id }, user);

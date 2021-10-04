@@ -8,5 +8,7 @@ namespace CRUD.Repositories
 
         public Task UpdateUserName(User user);
         public Task UpdateUserPassword(User user);
+        public void LoadPendencias(User user);
+        public ResetPasswordToken GetLastToken(User user);
     }
 }

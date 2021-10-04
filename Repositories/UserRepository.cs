@@ -1,4 +1,6 @@
 ﻿using CRUD.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CRUD.Repositories
@@ -16,6 +18,15 @@ namespace CRUD.Repositories
         {
             context.Entry(user).Property(us => us.Senha).IsModified = true;
             await context.SaveChangesAsync();
+        }
+        public void LoadPendencias(User user)
+        {
+            context.Entry(user).Collection(c => c.ResetPasswordToken).Load();
+        }
+        public ResetPasswordToken GetLastToken(User user)
+        {
+            LoadPendencias(user);
+            return user.ResetPasswordToken.OrderByDescending(u => u.Cadastro).FirstOrDefault();
         }
     }
 }
