@@ -1,7 +1,9 @@
 ﻿using CRUD.Models;
 using CRUD.Repositories;
+using CRUD.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,6 +24,10 @@ namespace CRUD.Controllers
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             var users = await repository.GetAll();
+
+            foreach (var user in users)
+                PasswordService.HidePassword(user);
+
             if(users == null)
             {
                 return BadRequest();
@@ -39,6 +45,8 @@ namespace CRUD.Controllers
                 return NotFound("Usuario não encontrado pelo id informado");
             }
 
+            PasswordService.HidePassword(user);
+
             return Ok(user);
         }
 
@@ -50,6 +58,11 @@ namespace CRUD.Controllers
                 return BadRequest("Usuário inválido");
             }
 
+            if (user.Id != 0)
+            {
+                return BadRequest("Id não deve ser definido para o insert/create.");
+            }
+
             await repository.Insert(user);
 
             return CreatedAtAction(nameof(GetUser), new { Id = user.Id }, user);
@@ -58,14 +71,14 @@ namespace CRUD.Controllers
         [HttpPut]
         public async Task<IActionResult> PutUser(User user)
         {
-            if (user == null)
+            if ((user == null) || (user.Id == 0))
             {
                 return BadRequest("Usuário inválido");
             }
 
             try
             {
-                await repository.Update(user);
+                await repository.UpdateUserName(user);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -81,7 +94,7 @@ namespace CRUD.Controllers
             var user = await repository.GetById(id);
             if (user == null)
             {
-                return NotFound($"Usuário de {id} não encontrado");
+                return NotFound($"Usuário de Id {id} não encontrado");
             }
 
             await repository.Delete(id);

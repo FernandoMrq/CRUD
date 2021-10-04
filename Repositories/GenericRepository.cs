@@ -7,7 +7,7 @@ namespace CRUD.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private ApiContext context = null;
+        protected ApiContext context = null;
         public GenericRepository(ApiContext context)
         {
             this.context = context;
