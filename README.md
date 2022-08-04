@@ -19,6 +19,11 @@ https://localhost:44369/api/user
 **POST** : Insert
 ###
 `
+
+
+
+
+
 {
     "email": "email@teste",
     "senha": "123456"
